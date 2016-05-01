@@ -51,12 +51,12 @@ extension Cookie: CustomStringConvertible {
 extension Cookie {
     public static func parse(string: String) -> Set<Cookie>? {
         var cookies = Set<Cookie>()
-        let tokens = string.split(";")
+        let tokens = string.split(separator: ";")
 
-        for i in 0 ..< tokens.count {
-            let cookieTokens = tokens[i].split("=", maxSplits: 1)
+        for token in tokens {
+            let cookieTokens = token.split(separator: "=", maxSplits: 1)
 
-            if cookieTokens.count != 2 {
+            guard cookieTokens.count == 2 else {
                 return nil
             }
 
