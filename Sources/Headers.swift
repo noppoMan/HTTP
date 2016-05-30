@@ -27,7 +27,7 @@ extension Headers: CustomStringConvertible {
         var string = ""
 
         for (header, values) in headers {
-            string += values.reduce("", combine: { $0 + "\(header): \($1)\n"})
+            string += values.reduce("", combine: { $0 + "\(header): \($1)\r\n"})
         }
 
         return string
