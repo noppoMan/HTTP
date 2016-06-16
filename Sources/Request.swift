@@ -37,23 +37,14 @@ extension Request {
 }
 
 extension Request {
-    public init(method: Method = .get, uri: URI = URI(path: "/"), headers: Headers = [:], body: Stream, didUpgrade: DidUpgrade?) {
-        self.init(
-            method: method,
-            uri: uri,
-            headers: headers,
-            body: body
-        )
-
-        self.didUpgrade = didUpgrade
-    }
-
+    
     public init(method: Method = .get, uri: URI = URI(path: "/"), headers: Headers = [:], body: Data = Data(), didUpgrade: DidUpgrade?) {
         self.init(
             method: method,
             uri: uri,
+            version: Version(major: 1, minor: 1),
             headers: headers,
-            body: body
+            body: .buffer(body)
         )
 
         self.didUpgrade = didUpgrade
@@ -88,16 +79,6 @@ extension Request {
             didUpgrade: didUpgrade
         )
     }
-
-    public init(method: Method = .get, uri: String, headers: Headers = [:], body: Stream, didUpgrade: DidUpgrade? = nil) throws {
-        self.init(
-            method: method,
-            uri: try URI(uri),
-            headers: headers,
-            body: body,
-            didUpgrade: didUpgrade
-        )
-    }
 }
 
 extension Request {
@@ -105,7 +86,7 @@ extension Request {
         return uri.path
     }
 
-    public var query: [String: [String?]] {
+    public var query: String? {
         return uri.query
     }
 }

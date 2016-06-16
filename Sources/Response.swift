@@ -37,33 +37,31 @@ extension Response {
 }
 
 extension Response {
-    public init(status: Status = .ok, headers: Headers = [:], body: Stream, didUpgrade: DidUpgrade?) {
+
+    public init(status: Status = .ok, headers: Headers = [:], cookieHeaders: Set<String> = [], body: Data = Data(), didUpgrade: DidUpgrade? = nil) {
         self.init(
+            version: Version(major: 1, minor: 1),
             status: status,
             headers: headers,
-            body: body
+            cookieHeaders: cookieHeaders,
+            body: .buffer(body)
         )
+        
+        self.headers["Content-Length"] = body.count.description
 
         self.didUpgrade = didUpgrade
     }
-
-    public init(status: Status = .ok, headers: Headers = [:], body: Data = Data(), didUpgrade: DidUpgrade?) {
+    
+    public init(status: Status = .ok, headers: Headers = [:], cookieHeaders: Set<String> = [], body: (AsyncSendingStream, ((Void) throws -> Void) -> Void) -> Void) {
         self.init(
+            version: Version(major: 1, minor: 1),
             status: status,
             headers: headers,
-            body: body
+            cookieHeaders: cookieHeaders,
+            body: .asyncSender(body)
         )
-
-        self.didUpgrade = didUpgrade
-    }
-
-    public init(status: Status = .ok, headers: Headers = [:], body: DataConvertible, didUpgrade: DidUpgrade? = nil) {
-        self.init(
-            status: status,
-            headers: headers,
-            body: body.data,
-            didUpgrade: didUpgrade
-        )
+        
+        self.headers["Transfer-Encoding"] = "chunked"
     }
 }
 
